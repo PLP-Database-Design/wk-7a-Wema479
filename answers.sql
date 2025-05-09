@@ -1,86 +1,43 @@
-Question 1
-use  test1;
+-- Question 1. Achieving 1NF
 
-create table ProductDetails (
+CREATE TABLE OrderDetails (
 OrderID INT PRIMARY KEY,
-    CustomerName  varchar(100),
-    OrderDate DATE);
+CustomerName VARCHAR(100),
+OrderID INT,
+    );
     
-INSERT INTO ProductDetails (OrderID, CustomerName, OrderDate) 
-SELECT OrderID, CustomerName, OrderDate FROM ProductDetails;
+INSERT INTO OrderDetails (OrderID, CustomerName, OrderDate)values
+(101, 'John Doe', 'Laptop'),
+(101, 'John Doe', 'Mouse'),
+(102, 'Jane Smith', 'Tablet'),
+(102, 'Jane Smith', 'Mouse'),
+(102, 'Jane Smith', 'Keyboard'),
+(103, 'Emily Clark', 'Phone');
 
-insert into ProductDetails (OrderId, CustomerName, OrderDate)
-values 
-(101, 'John', '2025-01-04'),
-(102, 'Jane Smith', '2025-03-18'),
-(103, 'Emily Clark', '2025-02-14')
-;
 
-CREATE TABLE OrderDetail (
+-- Question 2. Achieving 2NF
+CREATE TABLE CustomerInfo (
     OrderID INT PRIMARY KEY,
-    CustomerName VARCHAR(255),
-    OrderDate DATE
+    CustomerName VARCHAR(100)
 );
 
-CREATE TABLE OrderProducts (
-    OrderID INT,
-    ProductID INT,
+INSERT INTO CustomerInfo (OrderID, CustomerName) VALUES
+(101, 'John Doe'),
+(102, 'Jane Smith'),
+(103, 'Emily Clark');
+
+CREATE TABLE ProductDetails (
+    ProductID INT PRIMARY KEY,
     ProductName VARCHAR(100),
     Quantity INT,
-    PRIMARY KEY (OrderID, ProductID),
-    FOREIGN KEY (OrderID) REFERENCES OrderDetail(OrderID)
-    
+    OrderID INT,
+    FOREIGN KEY (OrderID) REFERENCES CustomerInfo(OrderID)
 );
 
--- Insert data into the new tables.  
-INSERT INTO OrdersDetail (OrderID, CustomerName, OrderDate) 
-SELECT OrderID, CustomerName, OrderDate FROM OrderDetail;
-
-insert into OrderDetail (OrderId, CustomerName, OrderDate)
-values 
-(101, 'John', '2025-01-04'),
-(102, 'Jane Smith', '2025-03-18'),
-(103, 'Emily Clark', '2025-02-14')
-;
-
-INSERT INTO OrderProducts (OrderID,ProductID, ProductName, Quantity) 
-SELECT OrderID, ProductID,ProductName, Quantity FROM OrderProducts;
-
-insert into OrderProducts (OrderId, ProductID, ProductName, Quantity)
-values 
-(101, '2311', 'laptop', '1'),
-(101, '2310', 'mouse', '1'),
-(102, '2350', 'tablet', '2'),
-(102, '2310', 'mouse', '1'),
-(102, '2316', 'keyboard', '1'),
-(103, '1279', 'phone', '1')
-;
-
--- The above SQL code creates two tables: ProductDetails and OrderDetail.
--- The ProductDetails table contains information about orders, including OrderID, CustomerName, and OrderDate.
-
--- The OrderDetail table contains information about products, including OrderID, ProductID, ProductName, and Quantity.
--- The code also inserts sample data into both tables.
-
-Question 2
-CREATE TABLE CustomerInfo (
-    CustomerID INT PRIMARY KEY,
-    CustomerName VARCHAR(255)
-);
-
-INSERT INTO CustomerInfo (CustomerID, CustomerName) 
-SELECT DISTINCT CustomerID, CustomerName FROM customerInfo;
-
-ALTER TABLE customerinfo
-DROP COLUMN CustomerName;
-
-ALTER TABLE customers
-ADD COLUMN CustomerID INT,
-ADD CONSTRAINT FK_Orders_Customers 
-FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID);
-
-UPDATE customers
-SET CustomerID = (SELECT CustomerID FROM Customers 
-WHERE Customers.CustomerName = 'Original CustomerName');
-
-
+INSERT INTO ProductDetails (ProductID, ProductName,Quantity, OrderID) VALUES
+(1, 'Laptop', 2, 101),
+(2, 'Mouse',1,  101),
+(3, 'Tablet',3,  102),
+(4, 'Mouse',1,  102),
+(5, 'Keyboard',2 ,  102),
+(6, 'Phone',1 , 103);
